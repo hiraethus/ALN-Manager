@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% if current_student %}
+{% block title %}Student Profile: {{ current_student }}{% endblock %}
+
+
+{% block page_title %}{{ current_student }}{% endblock %}
+{% endif %}
+{% block title_description %}{% endblock %}
+
+{% block content %}
+<ul class="breadcrumb">
+	<li><a href="/">Pen y Dre High School</a> <span class="divider">/</span></li>
+	<li><a href="/year/{{current_student.formClass.year.startDate.year}}">{{current_student.formClass.year}}</a><span class="divider">/</span></li>
+	<li><a href="/class/{{current_student.formClass.id}}">{{current_student.formClass.name}}</a><span class="divider">/</span></li>
+	<li>{{ current_student }}</li>
+</ul>
+
+
+<p>{{ current_student.backgroundInfo }}</p>
+	
+<h3>Individual Education Plans</h3>
+<table class="table">
+	<tr>
+		<th>Date</th>
+		<th>Description</th>
+		<th>Written by</th>
+		<th>Review</th>
+	</tr>
+	{% for iep in ieps%}
+	<tr>
+		<td>{{ iep.dateWritten|date:"D d M Y"}}</td>
+		<td>{{ iep.thingsToImprove|truncatewords:3 }}</td>
+		{% if iep.writtenBy.pk == current_user.pk %}
+		<td>Me</td>
+		{%else %}
+		<td>{{ iep.writtenBy.get_full_name }}</td>
+		{%endif%}
+		<td><a href='/iep/{{ iep.pk }}'>View/Edit</a></td>
+	</tr>
+	{% endfor %}
+</table>
+{% if current_user.is_authenticated %}
+<form method='post' >
+	<button class="btn btn-primary" name='submit' type='submit' value='create_iep'>Create an IEP</button>
+</form>
+{% endif %}
+<h3>Individual Behavioural Plans</h3>
+<table class="table">
+	<tr>
+		<th>Date</th>
+		<th>Description</th>
+		<th>Written by</th>
+		<th>Review</th>
+	</tr>
+	{% for ibp in ibps %}
+	<tr>
+		<td>{{ ibp.dateWritten }}</td>
+		<td>{{ ibp.thingsToImprove|truncatewords:3 }}</td>
+		{% if ibp.writtenBy.pk == current_user.pk %}
+		<td>Me</td>
+		{%else %}
+		<td>{{ ibp.writtenBy.get_full_name }}</td>
+		{%endif%}
+		<td><a href='/ibp/{{ ibp.pk }}'>View/Edit</a></td>
+	</tr>
+	{% endfor %}
+</table>
+{% if current_user.is_authenticated %}
+<form method='post' >
+	<button class="btn btn-primary" name='submit' type='submit' value='create_ibp'>Create an IBP</button>
+</form>
+{% endif %}
+
+<h3>Referrals</h3>
+<table class="table">
+	<tr>
+		<th>Date</th>
+		<th>Description</th>
+		<th>Written by</th>
+		<th>Review</th>
+	</tr>
+	{% for referral in referrals %}
+	<tr>
+		<td>{{ referral.dateOcurred }}</td>
+		<td>{{ referral.otherReasonForReferral }}</td>
+		{% if referral.writtenBy.pk == current_user.pk %}
+		<td>Me</td>
+		{% else %}
+		<td>{{ referral.writtenBy.get_full_name }}</td>
+		{% endif %}
+		<td><a href="/referral/{{referral.id}}">View/Edit</a></td>
+	</tr>
+	{% endfor %}
+</table>
+
+{% if current_user.is_authenticated %}
+<form method='post' >
+	<button class="btn btn-primary" name='submit' type='submit' value='create_referral'>Create Referral</button>
+</form>
+{% endif %}
+
+<h3>Tests</h3>
+<table class="table">
+	<tr>
+		<th>Date</th>
+		<th>Description</th>
+		<th>Written by</th>
+		<th>Review</th>
+	</tr>
+	{% for test in tests %}
+	<tr>
+		<td>{{test.test.dateOfTest }}</td>
+		<td>{{test.test.name}}</td>
+		{% if test.test.writtenBy.id == current_user.id %}
+		<td>Me</td>
+		{% else %}
+		<td>{{ test.test.writtenBy.get_full_name }}</td>
+		{% endif %}
+		<td><a href="/test/{{ test.test.id }}">View/Edit</a></td>
+	</tr>
+	{% endfor %}
+</table>
+{% endblock %}

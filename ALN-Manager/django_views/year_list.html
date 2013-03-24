@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}{{ year }}{% endblock %}
+
+{%block page_title %}{{ year }}{% endblock %}
+
+
+{%block content %}
+<!-- Breadcrumbs -->
+<ul class="breadcrumb">
+	<li><a href="/">Pen y Dre High School</a> <span class="divider">/</span></li>
+	<li>{{ year }}</li>
+</ul>
+<table class="table">
+	<tr>
+		<th>Class Name</th>
+		<th>Form Tutor</th>
+		<th>Review</th>
+	</tr>
+	{% for class in classes %}
+	<tr>
+		<td class="number">{{ class.name }}</td>
+		<td>{{ class.formTutor.get_full_name }}</td>
+		<td><a href="/class/{{ class.id }}">View/Edit</a></td>
+	</tr>
+	{% endfor %}
+</table>
+{% endblock %}

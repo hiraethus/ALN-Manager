@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% block title %}Individual Behavioural Plan{% endblock %}
+
+{% block script %}
+	function enable_form() {
+		form = document.forms['iep_form'];
+
+		uee = form.getElementsByClassName('user_editable');
+		for(i=0; i<uee.length; i++)
+			uee[i].disabled = !uee[i].disabled;
+	}
+
+	/*Adding a target to the table of IEP targets*/
+	function add_target() {
+		/* pseud-code
+			- find selected target to add
+			- create new table row for target in iep_targets table
+			- add target to table
+		*/
+		target_selection = document.getElementById('add_target').getElementsByTagName('select')[0]; 
+		selected_target = target_selection.options[target_selection.selectedIndex];
+
+		/*cancel if no target selected*/
+		if(selected_target.value === 'none') exit(0);
+
+		//add selected target to target table
+		iep_target_table = document.getElementById('iep_targets');
+		//create new row fo target to add
+		
+		new_row = document.createElement('tr');
+
+		target_description_td = document.createElement('td');
+		target_description_td.innerHTML = selected_target.innerHTML;
+		new_row.appendChild(target_description_td);
+		
+
+		target_achieved_td = document.createElement('td');
+		target_achieved_false = document.createElement('input');
+		target_achieved_false.setAttribute('name', 'targetachieved_'+selected_target.value);
+		target_achieved_false.setAttribute('type', 'hidden');
+		target_achieved_false.setAttribute('value', 'false');
+		target_achieved_td.appendChild(target_achieved_false);
+
+		target_achieved_true = document.createElement('input');
+		target_achieved_true.setAttribute('name', 'targetachieved_'+selected_target.value);
+		target_achieved_true.setAttribute('onclick', 'set_submit_visible(true)');
+		target_achieved_true.setAttribute('type', 'checkbox');
+		target_achieved_true.setAttribute('value', 'true');
+		target_achieved_td.appendChild(target_achieved_true);
+		new_row.appendChild(target_achieved_td);
+
+
+		keep_remove_td = document.createElement('td');
+	
+		keep_radio = document.createElement('input');
+		keep_radio.setAttribute('type', 'radio');
+		keep_radio.setAttribute('name', 'target_'+selected_target.value);
+		keep_radio.setAttribute('value', 'keep');
+		keep_radio.setAttribute('checked', 'checked');
+		keep_radio.setAttribute('onclick', 'set_submit_visible(true)');
+		keep_remove_td.appendChild(keep_radio);
+		keep_remove_td.appendChild(document.createTextNode("Keep"));
+		keep_remove_td.appendChild(document.createElement("br"));
+
+		remove_radio = document.createElement('input');
+		remove_radio.setAttribute('type', 'radio');
+		remove_radio.setAttribute('name', 'target_'+selected_target.value);
+		remove_radio.setAttribute('value', 'remove');
+		remove_radio.setAttribute('onclick', 'set_submit_visible(true)');
+		keep_remove_td.appendChild(remove_radio);
+		keep_remove_td.appendChild(document.createTextNode('Remove'));
+		keep_remove_td.appendChild(document.createElement('br'));	
+
+		new_row.appendChild(keep_remove_td);
+
+
+		iep_target_table.appendChild(new_row);
+	}
+
+	/* remove this target from the list of table of IEP targets */
+	function remove_target(){}
+
+	function set_submit_visible(bool_val)
+	{
+		submit_button = document.getElementById('submit_button');
+		if(bool_val){
+			submit_button.setAttribute('style', '');
+		} else {
+			submit_button.setAttribute('style', 'display: none;');
+		}
+	}
+{% endblock %}
+
+{% block page_title %}Individual Behavioural Plan{% endblock %}
+{% block title_description %}<input onclick='enable_form();' type='button' value='Edit' />{% endblock %}
+
+{% block content %}
+<form name="iep_form" method='post'>
+	<h3>Individual Behavioural Plan</h3>
+
+		<input style='display: none' type='text' value='{{ibp.id}}'/>
+		<table>
+			<tr>
+				<td><p>Learner's name:</p></td>
+				<td><p>{{ibp.studentInvolved}}</p></td><!-- make ajaxified -->
+			</tr>
+			<tr>
+				<td><p>Learning Champion:</p></td>
+				<td><p>{{ibp.studentInvolved.formClass.year.headOfYear.get_full_name}}</p></td><!-- populated automatically by ajax -->
+			</tr>
+			<tr>
+				<td><p>Code of Practice</p></td>
+				<td>
+					<select class='user_editable' onchange='set_submit_visible(true);' name="code_of_practice">
+						<option value="{{ ibp.codeOfPractice.pk }}">{{ ibp.codeOfPractice }}</option>
+						{% for codeOfPractice in codeOfPracticeList %}
+						{% if codeOfPractice != ibp.codeOfPractice %}
+						<option value="{{ codeOfPractice.pk }}">{{ codeOfPractice }}</option>
+						{% endif %}
+						{% endfor %}
+					</select>
+				</td>
+			<tr>
+				<td><p>Things to improve</p></td>
+				<td><textarea class='user_editable' onkeyup='set_submit_visible(true);' class='user_editable' name='things_to_improve' cols='40' rows='8'>{{ibp.thingsToImprove}}</textarea></td>
+			</tr>
+			<tr>
+				<td><p>Student Strengths</p></td>
+				<td><textarea onkeyup='set_submit_visible(true);' class='user_editable' name='student_strengths' cols='40' rows='8'>{{ibp.studentStrength}}</textarea></td>
+			</tr>
+		</table>
+
+	
+	<h3>Targets</h3>
+	<table class="table" id='iep_targets'> <!-- list of targets -->
+		<tr>
+			<th>Target</th>
+			<th>Achieved</th>
+			<th>Add/Remove</th>
+		</tr>
+		{% for target in ibp.ibpibptarget_set.all %}
+		<tr>
+			<td>{{ target.target }}</td>
+			{% if not target.targetAchieved %}
+			<td>
+				<input name="targetachieved_{{target.target.id}}" type="hidden" value="false" />
+				<input name="targetachieved_{{target.target.id}}" onclick='set_submit_visible(true);' type="checkbox" value="true" />
+			</td>
+			{% else %}
+			<td>
+				<input name="targetachieved_{{target.target.id}}" type="hidden" value="false" />
+				<input name="targetachieved_{{target.target.id}}" onclick='set_submit_visible(true);' type="checkbox" checked='yes' value="true">
+			</td>
+			{% endif %}
+
+			<td>
+				<input type="radio" name="target_{{target.target.id}}" value="keep" checked="checked" onclick="set_submit_visible(true)" />Keep<br />
+				<input type="radio" name="target_{{target.target.id}}" value="delete" onclick="set_submit_visible(true)" />Remove<br />
+			</td>
+		</tr>	
+		{% endfor %}
+		<!-- populated from db -->
+		<!-- added from javascript -->
+				
+	</table>
+	<div class="form-actions" id='add_target'>
+		<select>
+			<option value='none'>None</option>
+			{% for ibp_target in ibpTargets %}
+			<option value='{{ibp_target.id}}'>{{ibp_target}}</option>
+			{% endfor %}
+		</select>
+		<input class="btn" type='button' onClick='add_target(); ' value='Add Target' />
+	</div>
+	<input class="btn btn-primary" style='visibility: hidden;' id='submit_button' type='Submit' value='Save' />
+</form>
+{% endblock %}

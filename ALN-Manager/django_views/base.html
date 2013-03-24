@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>ALN Manager - {%block title%}{% endblock %}</title>
+	<link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap.css" />
+	<!--<link rel="stylesheet" type="text/css" href="/static/style.css" /> //-->
+
+</style>
+{%block head%}{%endblock%}
+<script type='text/javascript'>
+{% block script %}
+{% endblock %}
+</script>
+</head>
+
+<body>
+	<!-- Navbar list goes here -->
+	<div class="navbar ">
+		<div class="navbar-inner">
+			<a class="brand" href="#">ALN Manager</a>
+			<ul class="nav">
+				<li><a href="/inbox"><i class="icon-envelope"></i> Inbox</a></li>
+				<li><a href="/"> <i class="icon-book"></i> Browse School</a></li>
+				{% if current_user.is_superuser %}
+				<li><a href="/report"><i class="icon-file"></i> Reports</a></li>
+				{% endif %}
+				<li><a href="#"><i class="icon-wrench"></i> Settings</a></li>
+			</ul>
+			<p id='login_status' style='float: right; padding-right: 10px; padding-top: 8px;'>
+			{% if current_user.is_authenticated %}
+			Hello, {{ current_user.get_full_name }}!
+			<a href='/logout'> Log out</a>
+			{% else %}
+			<a href='/login'>Log in</a>	
+			{% endif %}
+			</p>
+
+		</div>
+	</div>
+	
+	<div class="container">
+		<div class="page-header">
+		<h1>{% block page_title %}My Base View{% endblock %}
+			<small>{% block title_description%}{% endblock %}</small></h1>
+		</div>
+		<p id="title_description">&nbsp;</p>
+		
+		{% block content %}
+		<h3>This is a test</h3>
+		<a class="resize_element" onclick="alert('Hello!');return false;" >collapse</a>
+		<p> This is a test </p>
+		{% endblock %}
+	</div>
+</body>
+</html>

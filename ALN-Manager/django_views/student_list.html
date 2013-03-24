@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}{{class}}{% endblock %}
+
+
+{%block page_title%} {{ class.name }} {% endblock %}
+
+{%block title_description %}
+{% endblock %}
+
+{%block content%}
+<ul class="breadcrumb">
+	<li><a href="/">Pen y Dre High School</a> <span class="divider">/</span></li>
+	<li><a href="/year/{{class.year.startDate.year}}">{{class.year}}</a><span class="divider">/</span></li>
+	<li>{{class.name}}<span class="divider">/</span></li>
+</ul>
+<table class="table">
+	<tr>
+		<th>Surname</th>
+		<th>Name</th>
+		<th>Date of Birth</th>
+		<th>Review</th>
+	</tr>
+	{% for student in students %}
+	<tr>
+		<td>{{ student.surname }}</td>
+		<td>{{ student.forename }}</td>
+		<td>{{ student.dateOfBirth }}</td>
+		<td><a href="/student/{{ student.id }}">View/Edit</a></td>
+	</tr>
+	{% endfor %}
+</table>
+{% endblock %}

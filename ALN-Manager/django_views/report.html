@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Generate Report{% endblock %}
+
+{% block page_title%}Generate Report{% endblock %}
+{% block title_description%}To create graphs for the annual report automatically{% endblock %}
+
+{% block content %}
+	<form action='.' method='post'>
+		<h3>Choose graph</h3>	
+			<label>Test Category</label>
+			<select name="test_category" multiple="multiple">
+				{% for category in test_category_list %}
+					<option value="{{category.name}}">{{ category }}</option>
+				{% endfor %}
+			</select>
+			<label>Select Year</label>
+			<select name="school_year">
+				{% for year in years %}
+				<option value="{{year.startDate.year}}">{{year}}</option>
+				{% endfor %}
+			</select>
+
+		<div class="form-actions">
+			<input class="btn btn-primary" name='submit' type='submit' value='Create' />
+			<input class="btn" name='submit' type='submit' value='Raphael' />
+		</div>
+
+	</form>
+{% endblock %}

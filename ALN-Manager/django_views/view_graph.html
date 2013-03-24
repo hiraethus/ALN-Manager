@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Graph Thing{% endblock%}
+{%block head%}
+<script src="/static/raphaeljs/raphael.js"></script>
+<script src="/static/raphaeljs/g.raphael.js"></script>
+<script src="/static/raphaeljs/g.pie.js"></script>
+{%endblock%}
+
+{%block script%}
+window.onload = function () {
+                var r = Raphael("holder"),
+                    pie = 
+			r.piechart(320, 240, 100,
+			 [
+			{% for key,value in graph.category_talley.items%}
+				{%if value > 0 %}
+				{{ value }}{%if not forloop.last %},{%endif%}
+				{%endif%}
+			{% endfor %}
+			],
+			//keys
+			 { legend: [
+				{% for key,value in graph.category_talley.items%}
+					{%if value > 0 %}
+					"%% {{ key }}"{%if not forloop.last %},{%endif%}
+					{%endif%}
+				{% endfor %}
+				],
+			 legendpos: "west", href: ["http://raphaeljs.com", "http://g.raphaeljs.com"]});
+
+                r.text(320, 100, "Interactive Pie Chart").attr({ font: "20px sans-serif" });
+                pie.hover(function () {
+                    this.sector.stop();
+                    this.sector.scale(1.1, 1.1, this.cx, this.cy);
+
+                    if (this.label) {
+                        this.label[0].stop();
+                        this.label[0].attr({ r: 7.5 });
+                        this.label[1].attr({ "font-weight": 800 });
+                    }
+                }, function () {
+                    this.sector.animate({ transform: 's1 1 ' + this.cx + ' ' + this.cy }, 500, "bounce");
+
+                    if (this.label) {
+                        this.label[0].animate({ r: 5 }, 500, "bounce");
+                        this.label[1].attr({ "font-weight": 400 });
+                    }
+                });
+            };
+{%endblock%}
+
+{%block page_title %}Some Graph Thing{% endblock%}
+{%block content%}
+	<div id="holder"></div>
+	<h3>Details</h3>
+	<table>
+		<tr>
+			<th>Improvements</th>
+			<th>Talley</th>
+		</tr>
+		{% for key,value in graph.category_talley.items%}
+		<tr>
+			<td>{{key}}</td>
+			<td>{{value}}</td>
+		</tr>
+		{%endfor%}
+	</table>
+{% endblock %}

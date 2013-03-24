@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}School List{% endblock %}
+{%block page_title %}School List{% endblock %}
+
+{%block content %}
+<!-- Breadcrumbs -->
+<h3>Pen y Dre High School</h3>
+<table class="table">
+	<tr>
+		<th>Year</th>
+		<th>Learning Champion</th>
+		<th>Review</th>
+	</tr>
+	{% for year in years %}
+	<tr>
+		<td class="number">{{ year.getCurrentYear }}</td>
+		<td>{{ year.headOfYear.get_full_name }}</td>
+		<td><a href="/year/{{ year.startDate.year }}">View/Edit</a></td>
+	</tr>
+	{% endfor %}
+</table>
+
+{% endblock %}

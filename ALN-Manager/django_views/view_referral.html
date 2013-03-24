@@ -1,0 +1,141 @@
+	{% extends "base.html" %}
+
+{% block title %}Referral Form{% endblock %}
+
+{% block page_title %}Referral Form {% endblock %}
+
+{%block script %}
+
+	function add_student() {
+		/* pseud-code
+			- find selected target to add
+			- create new table row for target in iep_targets table
+			- add target to table
+		*/
+		student_selection= document.getElementById('add_student').getElementsByTagName('select')[0]; 
+		selected_student= student_selection.options[student_selection.selectedIndex];
+
+		/*cancel if no student selected*/
+		if(selected_student.value === 'none') exit(0);
+
+		//add selected student to student table
+		iep_target_table = document.getElementById('iep_targets');
+		//create new row fo studet to add
+		
+		new_row = document.createElement('tr');
+
+		student_name_td = document.createElement('td');
+		student_name_td.innerHTML = selected_student.innerHTML;
+		new_row.appendChild(student_name_td);
+
+		keep_remove_td = document.createElement('td');
+
+		keep_radio = document.createElement('input');	
+		keep_radio.setAttribute('type', 'radio');
+		keep_radio.setAttribute('name', 'student_'+selected_student.value);
+		keep_radio.setAttribute('value', 'keep');
+		keep_radio.setAttribute('checked', 'checked');
+		keep_remove_td.appendChild(keep_radio);
+
+		keep_remove_td.appendChild(document.createTextNode('Keep'));
+		keep_remove_td.appendChild(document.createElement('br'));
+
+
+		remove_radio = document.createElement('input');	
+		remove_radio.setAttribute('type', 'radio');
+		remove_radio.setAttribute('name', 'student_'+selected_student.value);
+		remove_radio.setAttribute('value', 'delete');
+		keep_remove_td.appendChild(remove_radio);
+		
+		keep_remove_td.appendChild(document.createTextNode('Remove'));
+		keep_remove_td.appendChild(document.createElement('br'));
+
+		new_row.appendChild(keep_remove_td);
+	
+		iep_target_table.appendChild(new_row);
+	}
+{%endblock%}
+
+{% block content %}
+	<h3>Form</h3>
+	<form method="post">
+		<table>
+			<tr>
+				<td>Room</td>
+				<td><input name="room" type="text" value="{{referral.room}}" /></td>
+			</tr>
+			<tr>
+				<td>Reason for Referral</td>
+				<td>
+					<select name="reason_for_referral">
+						
+						<option value="{{ referral.reasonForReferral.id }}">{{ referral.reasonForReferral }}</option>
+                                                {% for referralReason in referralReasons %}
+                                                {% if referralReason.id != referral.reasonForReferral.id %}
+                                                <option value="{{ referralReason.id }}">{{ referralReason }}</option>
+                                                {% endif %}
+                                                {% endfor %}
+
+					</select>	
+				</td>
+			</tr>
+			<tr>
+				<td>Other reason for Referral</td>
+				<td>
+					<textarea name='other_reason' rows='8' cols='20'>{{referral.otherReasonForReferral}}</textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>Date Occurred</td>
+				<td>
+					<select name="day">
+					{%for i in month%}
+						<option>{{ i }}</option>
+					{% endfor %}
+					</select>
+					<select name="month">
+						<option value="1">January</option>
+						<option value="2">February</option>
+						<option value="3">March</option>
+						<option value="4">April</option>
+						<option value="5">May</option>
+						<option value="6">June</option>
+						<option value="7">July</option>
+						<option value="8">August</option>
+						<option value="9">September</option>
+						<option value="10">October</option>
+						<option value="11">November</option>
+						<option value="12">December</option>
+					</select>
+				</td>
+			</tr>
+		</table>
+		<h3>Students Involved</h3>
+		<a class="resize_element" onclick="alert('Hello!');return false;" >collapse</a>
+		<table id='iep_targets'> 
+			<tr>
+				<th>Student Name</th>
+				<th>Keep/Remove</th>
+			</tr>
+			{% for student in referral.studentsInvolved.all %}
+			<tr>
+				<td>{{ student.forename }} {{student.surname}}</td>
+				<td>
+					<input type="radio" name="student_{{student.id}}" value="keep" checked="checked"/> Keep<br />
+					<input type="radio" name="student_{{student.id}}" value="delete" /> Remove<br />
+				</td>
+			</tr>
+			{% endfor %}
+		</table>
+		<div style='background-color: rgb(220,220,220); padding-top: 10px; width: 100%;'id='add_student'>
+			<select>
+				<option value='none'>None</option>
+				{% for student in all_students %}
+				<option value='{{student.id}}'>{{student}}</option>
+				{%endfor%}
+			</select>
+			<input type='button' onClick='add_student(); ' value='Add Student' />
+		</div>
+		<input type="submit" value="Submit" />
+	</form>	
+{% endblock %}

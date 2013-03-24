@@ -1,0 +1,12 @@
+* add RTF docs for each document
+	* add function view returns RTF if not author of doc
+	 and returns editable form if user is author
+* permissions
+	* check if staffmember a head of year (for permissions)
+	* if super user (e.g. SENCO)
+	* hide any buttons for super-users from normal
+	 users
+//future work
+* poss add students and staffmembers using xml
+* staff profiles
+

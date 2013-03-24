@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% block title %}Test{% endblock %}
+
+{% block script %}
+	function enable_form() {
+		form = document.forms['iep_form'];
+
+		uee = form.getElementsByClassName('user_editable');
+		for(i=0; i<uee.length; i++) {
+			uee[i].disabled = !uee[i].disabled;
+		}	
+	}
+
+	function add_student() {
+		/* pseud-code
+			- find selected student to add
+			- create new table row for target in iep_targets table
+			- add target to table
+		*/
+		student_selection = document.getElementById('add_student').getElementsByTagName('select')[0]; 
+		selected_target = student_selection.options[student_selection.selectedIndex];
+
+		/*cancel if no student selected*/
+		if(selected_target.value === 'none'){ exit(0); }
+		
+		//add selected student to student table
+		iep_target_table = document.getElementById('iep_targets');
+		//create new row fo target to add
+		
+		new_row = document.createElement('tr');
+
+		student_description_td = document.createElement('td');
+		student_description_td.innerHTML = selected_target.innerHTML;
+		new_row.appendChild(student_description_td);
+	
+		student_score_td = document.createElement('td');
+		student_score_input = document.createElement('input');
+		student_score_input.setAttribute('onkeyup', 'set_submit_visible(true)');
+		student_score_input.setAttribute('name','studentscore_'+selected_target.value);
+		student_score_input.setAttribute('type', 'text');
+		student_score_input.setAttribute('value', 1);
+		student_score_td.appendChild(student_score_input);
+
+		new_row.appendChild(student_score_td);
+
+		keep_remove_td = document.createElement('td');
+
+		keep_radio = document.createElement('input');	
+		keep_radio.setAttribute('type', 'radio');
+		keep_radio.setAttribute('name', 'student_'+selected_target.value);
+		keep_radio.setAttribute('value', 'keep');
+		keep_radio.setAttribute('checked', 'checked');
+		keep_remove_td.appendChild(keep_radio);
+
+		keep_remove_td.appendChild(document.createTextNode('Keep'));
+		keep_remove_td.appendChild(document.createElement('br'));
+
+
+		remove_radio = document.createElement('input');	
+		remove_radio.setAttribute('type', 'radio');
+		remove_radio.setAttribute('name', 'student_'+selected_target.value);
+		remove_radio.setAttribute('value', 'delete');
+		keep_remove_td.appendChild(remove_radio);
+		
+		keep_remove_td.appendChild(document.createTextNode('Remove'));
+		keep_remove_td.appendChild(document.createElement('br'));
+
+		new_row.appendChild(keep_remove_td);
+		
+		iep_target_table.appendChild(new_row);
+	}
+	/* remove this target from the list of table of IEP targets */
+	function remove_target(){}
+
+	function set_submit_visible(bool_val)
+	{
+		submit_button = document.getElementById('submit_button');
+		if(bool_val){
+			submit_button.setAttribute('style', '');
+		} else {
+			submit_button.setAttribute('style', 'display: none;');
+		}
+	}
+{% endblock %}
+
+{% block page_title %}Test{% endblock %}
+{% block title_description %}<input onclick='enable_form();' type='button' value='Edit' />{% endblock %}
+
+{% block content %}
+<form name="iep_form" method='post'>
+	<h3>Test</h3>
+	<a class="resize_element" onclick="alert('Hello!');return false;" >collapse</a>
+		<input style='display: none' type='text' value=''/>
+		<table>
+			<tr>
+				<td><p>Name</p></td>
+				<td><p><input type="text" name="test_name" onchange='set_submit_visible(true);' value="{{test.name}}" /></p></td>
+			</tr>
+			<tr>
+				<td><p>Written By</p></td>
+				<td><p>{{ test.writtenBy }}</p></td>
+			</tr>
+			<tr>
+				<td><p>Description</p></td>
+				<td><p><textarea name='description' rows='8' cols='40' onkeyup='set_submit_visible(true);'>{{test.description}}</textarea></p></td>
+			</tr>
+			<tr>
+				<td><p>Test Category</p></td>
+				<td>
+					<select onchange='set_submit_visible(true)' name="test_category">
+						<option value="{{ test.testCategory.pk }}">{{ test.testCategory }}</option>
+						{% for category in categories %}
+						{% if category != test.testCategory %}
+						<option value="{{ category.pk }}">{{ category }}</option>
+						{% endif %}
+						{% endfor %}
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td><p>Date of Test</p></td>
+				<td><p>{{test.dateOfTest}}</p></td>
+			</tr>
+		</table>
+
+	<h3>Students</h3>
+	<a class="resize_element" onclick="alert('Hello!');return false;" >collapse</a>
+	<table id='iep_targets'> <!-- list of targets -->
+		<tr>
+			<th>Student</th>
+			<th>Score</th>
+			<th>Keep/Remove</th>
+		</tr>
+		<!-- populated from db -->
+		{% for student in test.studenttest_set.all %}
+		<tr>
+			<td>{{student.student }}</td>
+			<td><input name='studentscore_{{student.student.id}}' onkeyup='set_submit_visible(true)'type="text" value="{{student.score}}" /></td>
+			<td>
+				<input type="radio" name="student_{{student.student.id}}" value="keep" checked="checked"/> Keep<br />
+				<input type="radio" name="student_{{student.student.id}}" value="delete" /> Remove<br />
+			</td>
+		</tr>
+		{% endfor %}
+		<!-- added from javascript -->
+				
+	</table>
+	<div style='background-color: rgb(220,220,220); padding-top: 10px; width: 100%;'id='add_student'>
+		<select>
+			<option value='none'>None</option>
+			{%for student in students %}
+			<option value='{{ student.id}}'>{{ student }}</option>
+			{%endfor%}
+		</select>
+		<input type='button' onClick='add_student(); ' value='Add Student' />
+	</div>
+	<input style='visibility: hidden;' id='submit_button' type='Submit' value='Save' />
+</form>
+{% endblock %}

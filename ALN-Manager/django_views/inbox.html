@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}{{ user }} Inbox{% endblock %}
+
+{% block page_title%}Inbox{% endblock %}
+{% block title_description%}{% endblock %}
+
+{% block content %}
+<h3>Things to do</h3>
+<div style="clear:both"></div>
+<form method="post">
+		<button style="width: 100px;" name="submit" type="submit" value="new_test">New Test</button>
+		<button style="width: 100px;" name="submit" type="submit" value="new_referral">New Referral</button>
+		{% if user.is_superuser %}
+		<button style="width: 100px;" name="submit" type="submit" value="create_report">Create Report</button>
+		{% endif %}
+</form>
+<h3>IEPs for Review</h3>
+	<table class="table">
+		<tr>
+			<th>Date</th>
+			<th>Description</th>
+			<th>Review</th>
+		</tr>
+		{% for iep in ieps %}
+		<tr>
+			<td>{{ iep.dateWritten|date:"D d M Y"}}</td>
+			<td>{{ iep.thingsToImprove|truncatewords:3 }}</td>
+			<td><a href='/iep/{{ iep.pk }}'>View/Edit</a></td>
+		</tr>
+		{% endfor %}
+	</table>
+
+<h3>IBPs for Review</h3>
+	<table class="table">
+		<tr>
+			<th>Date</th>
+			<th>Description</th>
+			<th>Review</th>
+		</tr>
+		{% for ibp in ibps %}
+		<tr>
+			<td>{{ iep.dateWritten|date:"D d M Y"}}</td>
+			<td>{{ iep.thingsToImprove|truncatewords:3 }}</td>
+			<td><a href='/iep/{{ iep.pk }}'>View/Edit</a></td>
+		</tr>
+		{% endfor %}
+	</table>
+{% endblock %}
