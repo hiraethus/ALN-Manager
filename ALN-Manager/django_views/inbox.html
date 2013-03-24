@@ -9,11 +9,13 @@
 <h3>Things to do</h3>
 <div style="clear:both"></div>
 <form method="post">
-		<button style="width: 100px;" name="submit" type="submit" value="new_test">New Test</button>
-		<button style="width: 100px;" name="submit" type="submit" value="new_referral">New Referral</button>
+	<div class="btn-group">
+		<button class="btn" name="submit" type="submit" value="new_test">New Test</button>
+		<button class="btn" name="submit" type="submit" value="new_referral">New Referral</button>
 		{% if user.is_superuser %}
-		<button style="width: 100px;" name="submit" type="submit" value="create_report">Create Report</button>
+		<button class="btn" name="submit" type="submit" value="create_report">Create Report</button>
 		{% endif %}
+	</div>
 </form>
 <h3>IEPs for Review</h3>
 	<table class="table">
