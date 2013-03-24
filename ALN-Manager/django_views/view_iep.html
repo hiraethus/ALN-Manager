@@ -98,27 +98,27 @@
 	<h3>Individual Education Plan</h3>
 
 		<input style='display: none' type='text' value='{{iep.id}}'/>
-		<table>
+		<table class="table">
 			<tr>
-				<td><p>Learner's name:</td>
+				<th><p>Learner's name:</p></th>
 				<td><p>{{iep.student}}</p></td>
 			</tr>
 			<tr>
-				<td><p>Review Date:</td>
+				<th><p>Review Date:</td>
 				<td><p>{{ iep.review_date }}</p></td>
 			</tr>
 			<tr>
-				<td><p>Learning Champion:</p></td>
+				<th><p>Learning Champion:</p></th>
 				<td><p>
 					{{ iep.student.formClass.year.headOfYear.get_full_name }}
 				</p></td>
 			</tr>
 			<tr>
-				<td><p>Things to improve</p></td>
+				<th><p>Things to improve</p></th>
 				<td><textarea onkeyup='set_submit_visible(true);' class='user_editable' name='things_to_improve' cols='40' rows='8'>{{iep.thingsToImprove}}</textarea></td>
 			</tr>
 			<tr>
-				<td><p>Student Strengths</p></td>
+				<th><p>Student Strengths</p></th>
 				<td><textarea onkeyup='set_submit_visible(true);' class='user_editable' name='student_strengths' cols='40' rows='8'>{{iep.studentStrength}}</textarea></td>
 			</tr>
 		</table>
