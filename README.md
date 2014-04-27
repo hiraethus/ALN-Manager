@@ -11,6 +11,7 @@ application is still in its infancy. However, for those who are interested in ge
 
 The deployment of this project is based loosely on the tutorial for virtualenvsd at 
 > http://thecodeship.com/deployment/deploy-django-apache-virtualenv-and-mod_wsgi/ 
+
 and assumes you are running on a debian based OS, preferrably Ubuntu.
 
 TODO - add specific instructions
